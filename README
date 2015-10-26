@@ -1,0 +1,11 @@
+This is a simple tool allowing conversion between Wavelet Scalar
+Quantization (WSQ) image format and standard PNG.
+
+WSQ is mainly used for fingerprint images, see more details here:
+
+	http://www.nist.gov/itl/iad/ig/wsq.cfm
+
+This implementation is taken from NBIS rel 4.2.0 released into
+Public Domain. See more details here:
+    
+    http://www.nist.gov/itl/iad/ig/nbis.cfm
