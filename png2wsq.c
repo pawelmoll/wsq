@@ -79,9 +79,10 @@ static int read_grey_8bit_png(FILE *fl, void **image, int *width, int *height)
 
 static void usage(const char *comm)
 {
-	fprintf(stderr, "Usage: %s [-h] <in.png> <out.wsq>\n", comm);
+	fprintf(stderr, "Usage: %s [-h] [-b BITRATE] <in.png> <out.wsq>\n", comm);
 	fprintf(stderr, "where:\n");
 	fprintf(stderr, "\t-h\tusage syntax (this message)\n");
+	fprintf(stderr, "\t-b\tcompression bitrate (0.75 by default)\n");
 	fprintf(stderr, "\t\tuse - instead of file name to use stdin/stdout\n");
 }
 
@@ -92,12 +93,22 @@ int main(int argc, char *argv[])
 	FILE *out = NULL;
 	int err;
 	int width, height;
+	float bitrate = 0.75;
 	unsigned char *image;
 	unsigned char *wsq;
 	int size;
 
-	while ((opt = getopt(argc, argv, "h")) != -1) {
+	while ((opt = getopt(argc, argv, "hb:")) != -1) {
+		char *t;
 		switch (opt) {
+		case 'b':
+			bitrate = strtof(optarg, &t);
+			if (bitrate <= 0.0 || bitrate > 1.0 || *t) {
+				fprintf(stderr, "Invalid bitrate '%s'\n",
+						optarg);
+				return 1;
+			}
+			break;
 		default:
 			usage(argv[0]);
 			return 1;
@@ -133,7 +144,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	err = wsq_encode_mem(&wsq, &size, 0.75,
+	err = wsq_encode_mem(&wsq, &size, bitrate,
 			image, width, height, 8, -1, NULL);
 	if (err) {
 		fprintf(stderr, "Failed to compress image! (%d)\n", err);
