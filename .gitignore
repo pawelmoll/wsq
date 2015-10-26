@@ -1,0 +1,6 @@
+.*
+.gitconfig
+~*
+*.pro.user*
+*.o
+*.so
